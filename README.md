@@ -63,6 +63,3 @@ jobconnect-flask
 - Job posting by employers with required skills and job descriptions.
 - Job searching for users based on their skills.
 
-## License
-
-This project is licensed under the MIT License.
