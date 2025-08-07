@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Jobs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Matching Jobs</h1>
+        <form action="{{ url_for('find_jobs') }}" method="post">
+            <label for="name">Enter your name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="skill">Enter your skill:</label>
+            <input type="text" id="skill" name="skill" required>
+            <button type="submit">Find Jobs</button>
+        </form>
+        {% if jobs %}
+            <h2>Available Jobs:</h2>
+            <ul>
+                {% for job in jobs %}
+                    <li>
+                        <strong>Employer:</strong> {{ job.employer }}<br>
+                        <strong>Job Description:</strong> {{ job.desc }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No matching jobs found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

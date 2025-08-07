@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Post a Job</h1>
+        <form action="/post_job" method="POST">
+            <label for="employer">Employer Name:</label>
+            <input type="text" id="employer" name="employer" required>
+
+            <label for="job_skill">Required Skill:</label>
+            <input type="text" id="job_skill" name="job_skill" required>
+
+            <label for="job_desc">Job Description:</label>
+            <textarea id="job_desc" name="job_desc" required></textarea>
+
+            <button type="submit">Post Job</button>
+        </form>
+        <a href="/">Back to Home</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to JobConnect</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('register') }}">Register as Worker</a></li>
+                <li><a href="{{ url_for('post_job') }}">Post a Job</a></li>
+                <li><a href="{{ url_for('find_jobs') }}">Find Jobs</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Your gateway to job opportunities!</h2>
+        <p>Connect with employers and find the right job for your skills.</p>
+    </main>
+    <footer>
+        <p>&copy; 2025 JobConnect. All rights reserved.</p>
+    </footer>
+</body>
+</html>
