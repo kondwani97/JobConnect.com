@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dash-page">
+
+    <!-- Banner -->
+    <div class="dash-banner employer-banner">
+        <div class="dash-banner__content">
+            {% if user.profile_pic %}
+                <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}"
+                     class="dash-avatar" alt="Profile">
+            {% else %}
+                <div class="dash-avatar dash-avatar--placeholder">{{ user.name[0].upper() }}</div>
+            {% endif %}
+            <div class="dash-banner__info">
+                <h2>{{ user.name }}</h2>
+                <p>Employer  •  {{ user.location if user.location else 'Location not set' }}</p>
+                <div class="plan-chip plan-chip--{{ user.get('plan','free') }}">
+                    💼 {{ plan.name }} Plan
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dash-body">
+
+        <!-- Plan usage bar -->
+        <div class="plan-usage">
+            <div class="plan-usage__label">
+                <span>Monthly Posts</span>
+                <span>
+                    {{ posts_used }} / {{ posts_limit if posts_limit is not none else '∞' }}
+                </span>
+            </div>
+            {% if posts_limit %}
+            <div class="plan-usage__track">
+                <div class="plan-usage__fill
+                    {% if posts_used >= posts_limit %}plan-usage__fill--full{% endif %}"
+                     style="width: {{ [((posts_used / posts_limit) * 100)|int, 100]|min }}%">
+                </div>
+            </div>
+            {% endif %}
+            {% if not can_post %}
+            <p class="plan-warn">⚠ {{ post_reason }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-icon">📋</div>
+                <h3>{{ my_jobs | length }}</h3>
+                <p>Jobs Posted</p>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon">👥</div>
+                <h3>{{ applications | length }}</h3>
+                <p>Applications</p>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon">✉️</div>
+                <h3>{{ unread_count }}</h3>
+                <p>Unread</p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="dash-actions">
+            {% if can_post %}
+                <a class="dash-btn dash-btn--primary" href="/post_job">➕ Post a Job</a>
+            {% else %}
+                <a class="dash-btn dash-btn--primary" href="/upgrade">⬆ Upgrade Plan</a>
+            {% endif %}
+            <a class="dash-btn dash-btn--secondary" href="/messages">
+                ✉️ Messages
+                {% if unread_count > 0 %}<span class="badge">{{ unread_count }}</span>{% endif %}
+            </a>
+            <a class="dash-btn dash-btn--ghost" href="/upgrade">📋 Plans</a>
+            <a class="dash-btn dash-btn--ghost" href="/admin/revenue">💰 Revenue</a>
+            <a class="dash-btn dash-btn--ghost" href="/settings">⚙ Settings</a>
+        </div>
+
+        <!-- Job listings -->
+        {% if my_jobs %}
+        <div class="dash-section-title">📋 Your Job Listings</div>
+        {% for job in my_jobs %}
+        <div class="dash-card dash-card--job {% if is_featured(job) %}dash-card--featured{% endif %}">
+            <div class="dash-card__header">
+                <div style="display:flex;gap:.5rem;align-items:center">
+                    <span class="status-badge {{ job.status }}">{{ job.status.upper() }}</span>
+                    {% if is_featured(job) %}
+                        <span class="featured-badge">⭐ FEATURED</span>
+                    {% endif %}
+                </div>
+                <span class="job-meta">{{ job.posted_at }}</span>
+            </div>
+            <h4 class="job-title">{{ job.skill }}</h4>
+            <div class="job-details">
+                {% if job.location %}<span>📍 {{ job.location }}</span>{% endif %}
+                {% if job.pay %}<span>💰 {{ job.pay }}</span>{% endif %}
+            </div>
+            <p class="job-desc">{{ job.desc }}</p>
+
+            {% if not is_featured(job) and job.status == 'open' %}
+            <form method="POST" action="/feature_job/{{ job.id }}" style="margin-top:.75rem">
+                <button type="submit" class="dash-btn dash-btn--boost dash-btn--sm">
+                    ⭐ Feature this job — K{{ boost_price }}
+                </button>
+            </form>
+            {% elif is_featured(job) %}
+            <p class="featured-until">Featured until {{ job.featured_until }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h4>No jobs posted yet</h4>
+            <p>Post your first job to start receiving applications from skilled workers.</p>
+            <a class="dash-btn dash-btn--primary" href="/post_job">Post a Job</a>
+        </div>
+        {% endif %}
+
+        <!-- Applications -->
+        {% if applications %}
+        <div class="dash-section-title">👥 Applications Received</div>
+        {% for app in applications %}
+        <div class="dash-card dash-card--app">
+            <div class="dash-card__header">
+                <span class="status-badge {{ app.status }}">{{ app.status.upper() }}</span>
+                <span class="job-meta">Applied: {{ app.applied_at }}</span>
+            </div>
+            <div class="app-info">
+                <div class="app-worker">
+                    <span class="worker-initial">{{ app.worker[0].upper() }}</span>
+                    <div>
+                        <strong>{{ app.worker }}</strong>
+                        <p>For: {{ app.job_skill }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="dash-card__actions">
+                {% if app.status == 'pending' %}
+                    <a class="dash-btn dash-btn--primary dash-btn--sm"
+                       href="/manage_application/{{ app.id }}/accept">✓ Accept</a>
+                    <a class="dash-btn dash-btn--danger dash-btn--sm"
+                       href="/manage_application/{{ app.id }}/reject">✗ Reject</a>
+                {% elif app.status == 'accepted' %}
+                    <a class="dash-btn dash-btn--primary dash-btn--sm"
+                       href="/complete_job/{{ app.id }}">✅ Mark Complete</a>
+                    <a class="dash-btn dash-btn--ghost dash-btn--sm"
+                       href="/messages/send?to={{ app.worker }}&subject=Re: {{ app.job_skill }}&thread_id={{ app.id }}">
+                       ✉️ Message</a>
+                {% elif app.status == 'completed' %}
+                    <a class="dash-btn dash-btn--secondary dash-btn--sm"
+                       href="/rate/{{ app.id }}">⭐ Rate Worker</a>
+                    <a class="dash-btn dash-btn--ghost dash-btn--sm"
+                       href="/worker_profile/{{ app.worker }}">👤 Profile</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

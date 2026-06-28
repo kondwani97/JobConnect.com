@@ -1,27 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Register as a Worker</h1>
-        <form action="/register" method="POST">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-page">
+    <div class="auth-overlay"></div>
+    <div class="auth-card auth-card--wide">
+        <div class="auth-brand">
+            <span class="brand-icon">⚙</span>
+            <h1>JobConnect</h1>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+            <h2>Create Account</h2>
+            <p class="auth-sub">Join thousands of workers and employers</p>
 
-            <label for="skill">Skill:</label>
-            <input type="text" id="skill" name="skill" required>
+            <div class="form-grid">
+                <div class="input-group">
+                    <span class="input-icon">👤</span>
+                    <input name="name" placeholder="Full Name" required>
+                </div>
+                <div class="input-group">
+                    <span class="input-icon">📱</span>
+                    <input name="phone" placeholder="Phone Number">
+                </div>
+                <div class="input-group">
+                    <span class="input-icon">🔧</span>
+                    <input name="skill" placeholder="Main Skill (e.g. Plumber)">
+                </div>
+                <div class="input-group">
+                    <span class="input-icon">📍</span>
+                    <input name="location" placeholder="Location" required>
+                </div>
+            </div>
 
-            <label for="location">Location:</label>
-            <input type="text" id="location" name="location" required>
+            <div class="input-group">
+                <span class="input-icon">🔒</span>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
 
-            <button type="submit">Register</button>
+            <select name="role" required>
+                <option value="">Select Your Role</option>
+                <option value="worker">🔧 Worker — I'm looking for jobs</option>
+                <option value="employer">💼 Employer — I'm hiring</option>
+            </select>
+
+            <label class="file-label" for="profile_pic">
+                <span class="file-icon">📷</span> Upload Profile Picture (optional)
+            </label>
+            <input type="file" id="profile_pic" name="profile_pic" accept="image/*" class="file-input">
+
+            <button type="submit">Create Account</button>
+            <p class="auth-link">Already have an account? <a href="/login">Sign in</a></p>
         </form>
-        <a href="/">Back to Home</a>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-wrapper">
+<form method="POST">
+    <h2>Complete Job</h2>
+    <p style="margin-bottom:1.2rem; color:#6b7280;">
+        You're marking this job as complete for <strong>{{ app_rec.worker }}</strong>.<br>
+        Enter the amount paid so the platform fee ({{ commission_rate }}%) can be recorded.
+    </p>
+
+    <label>Skill / Job Type</label>
+    <input type="text" value="{{ app_rec.job_skill }}" disabled>
+
+    <label>Amount Paid to Worker (K)</label>
+    <input type="number" name="pay_amount" placeholder="e.g. 500"
+           min="0" step="0.01" required>
+
+    <div class="commission-preview">
+        <span>Platform fee ({{ commission_rate }}%)</span>
+        <span id="fee-display">K 0.00</span>
+    </div>
+
+    <button type="submit">Confirm & Complete</button>
+    <a class="dash-btn dash-btn--ghost" href="/dashboard"
+       style="display:block;text-align:center;margin-top:.75rem">Cancel</a>
+</form>
+</div>
+
+<script>
+const input = document.querySelector('input[name="pay_amount"]');
+const display = document.getElementById('fee-display');
+input.addEventListener('input', () => {
+    const val = parseFloat(input.value) || 0;
+    display.textContent = 'K ' + (val * {{ commission_rate / 100 }}).toFixed(2);
+});
+</script>
+{% endblock %}

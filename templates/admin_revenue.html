@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="report-wrapper">
+
+    <h2>💰 Revenue Overview</h2>
+
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="stat-icon">💰</div>
+            <h3>K{{ "%.0f"|format(total) }}</h3>
+            <p>Total Revenue</p>
+        </div>
+        {% for type, amount in by_type.items() %}
+        <div class="stat-box">
+            <div class="stat-icon">
+                {% if type == 'plan_upgrade' %}📋
+                {% elif type == 'boost' %}⭐
+                {% elif type == 'worker_boost' %}👤
+                {% else %}💸{% endif %}
+            </div>
+            <h3>K{{ "%.0f"|format(amount) }}</h3>
+            <p>{{ type.replace('_',' ').title() }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h3>Transaction Log</h3>
+    {% if payments %}
+    <table class="rev-table">
+        <thead>
+            <tr>
+                <th>#</th><th>User</th><th>Type</th>
+                <th>Amount</th><th>Status</th><th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in payments|reverse %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.user }}</td>
+            <td><span class="rev-type rev-type--{{ p.type }}">{{ p.type.replace('_',' ') }}</span></td>
+            <td><strong>K{{ "%.2f"|format(p.amount) }}</strong></td>
+            <td><span class="status-badge completed">{{ p.status }}</span></td>
+            <td>{{ p.paid_at }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">💸</div>
+            <h4>No transactions yet</h4>
+            <p>Revenue will appear here once employers upgrade or boost listings.</p>
+        </div>
+    {% endif %}
+
+    <div style="margin-top:1.5rem">
+        <a class="dash-btn dash-btn--ghost" href="/dashboard">← Dashboard</a>
+    </div>
+</div>
+{% endblock %}

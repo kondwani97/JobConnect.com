@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="inbox-wrapper">
+    <div class="inbox-header">
+        <h2>Inbox</h2>
+        <a class="btn" href="/messages/send">New Message</a>
+    </div>
+
+    {# ── Received ── #}
+    <h3>Received</h3>
+    {% if received %}
+        {% for msg in received %}
+        <div class="message-row {% if not msg.read %}unread{% endif %}">
+            <a href="/messages/read/{{ msg.id }}">
+                <span class="msg-from">{{ msg['from'] }}</span>
+                <span class="msg-subject">{{ msg.subject }}</span>
+                <span class="msg-time">{{ msg.timestamp }}</span>
+                {% if not msg.read %}<span class="badge">New</span>{% endif %}
+            </a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="muted">No messages received yet.</p>
+    {% endif %}
+
+    {# ── Sent ── #}
+    <h3>Sent</h3>
+    {% if sent %}
+        {% for msg in sent %}
+        <div class="message-row sent-msg">
+            <span class="msg-from">To: {{ msg.to }}</span>
+            <span class="msg-subject">{{ msg.subject }}</span>
+            <span class="msg-time">{{ msg.timestamp }}</span>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="muted">No messages sent yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

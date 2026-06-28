@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="report-wrapper">
+
+    <h2>My Job Report — {{ user.name }}</h2>
+
+    {# ── Summary stats ── #}
+    <div class="stats-row">
+        <div class="stat-box">
+            <h3>{{ report.total }}</h3>
+            <p>Jobs Completed</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ avg_rating if avg_rating else '—' }}</h3>
+            <p>Average Rating</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ my_ratings | length }}</h3>
+            <p>Reviews Received</p>
+        </div>
+    </div>
+
+    {# ── Jobs by skill/category ── #}
+    <h3>Jobs by Skill</h3>
+    {% if report.by_category %}
+        <div class="bar-chart">
+        {% for category, count in report.by_category.items() %}
+            <div class="bar-row">
+                <span class="bar-label">{{ category }}</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ (count / report.total * 100)|int }}%"></div>
+                </div>
+                <span class="bar-count">{{ count }} job{{ 's' if count != 1 }}</span>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">No completed jobs yet.</p>
+    {% endif %}
+
+    {# ── Completed job history ── #}
+    <h3>Completed Jobs</h3>
+    {% if report.records %}
+        {% for rec in report.records %}
+        <div class="job-card">
+            <p><b>Skill:</b>     {{ rec.job_skill }}</p>
+            <p><b>Employer:</b>  {{ rec.employer }}</p>
+            <p><b>Completed:</b> {{ rec.completed_at }}</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="muted">No completed jobs to show.</p>
+    {% endif %}
+
+    {# ── Ratings received ── #}
+    <h3>Ratings Received</h3>
+    {% if my_ratings %}
+        {% for r in my_ratings %}
+        <div class="rating-card">
+            <div class="stars">
+                {% for i in range(1, 6) %}
+                    <span class="star {% if i <= r.stars %}filled{% endif %}">★</span>
+                {% endfor %}
+                <span>({{ r.stars }}/5)</span>
+            </div>
+            <p><b>From:</b> {{ r.employer }} &nbsp;|&nbsp; {{ r.given_at }}</p>
+            {% if r.comment %}<p class="comment">{{ r.comment }}</p>{% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="muted">No ratings received yet.</p>
+    {% endif %}
+
+    <a class="btn outline" href="/dashboard">Back to Dashboard</a>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dash-page">
+
+    <!-- ── Hero banner ── -->
+    <div class="dash-banner worker-banner">
+        <div class="dash-banner__overlay"></div>
+        <div class="dash-banner__content">
+            {% if user.profile_pic %}
+                <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}"
+                     class="dash-avatar" alt="Profile">
+            {% else %}
+                <div class="dash-avatar dash-avatar--placeholder">{{ user.name[0].upper() }}</div>
+            {% endif %}
+            <div class="dash-banner__info">
+                <h2>{{ user.name }}</h2>
+                <p>{{ user.skill }}  •  {{ user.location }}</p>
+                {% if user.bio %}<p class="bio">{{ user.bio }}</p>{% endif %}
+
+                <div class="rating-display">
+                    {% if avg_rating %}
+                        {% for i in range(1, 6) %}
+                            <span class="star {% if i <= avg_rating %}filled{% endif %}">★</span>
+                        {% endfor %}
+                        <span class="rating-value">{{ avg_rating }} / 5</span>
+                    {% else %}
+                        <span class="muted-light">No ratings yet</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Body ── -->
+    <div class="dash-body">
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-icon">✅</div>
+                <h3>{{ report.total }}</h3>
+                <p>Jobs Completed</p>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon">⭐</div>
+                <h3>{{ avg_rating if avg_rating else '—' }}</h3>
+                <p>Avg Rating</p>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon">✉️</div>
+                <h3>{{ unread_count }}</h3>
+                <p>Unread Messages</p>
+            </div>
+        </div>
+
+        <!-- Action buttons — centred -->
+        <div class="dash-actions">
+            <a class="dash-btn dash-btn--primary" href="/find_jobs">
+                <span>🔍</span> Find Jobs
+            </a>
+            <a class="dash-btn dash-btn--secondary" href="/messages">
+                <span>✉️</span> Messages
+                {% if unread_count > 0 %}<span class="badge">{{ unread_count }}</span>{% endif %}
+            </a>
+            <a class="dash-btn dash-btn--ghost" href="/my_report">
+                <span>📊</span> My Report
+            </a>
+            <a class="dash-btn dash-btn--ghost" href="/settings">
+                <span>⚙</span> Settings
+            </a>
+        </div>
+
+        <!-- Job breakdown -->
+        {% if report.by_category %}
+        <div class="dash-card">
+            <div class="dash-card__header">
+                <h4>📊 Jobs by Skill</h4>
+            </div>
+            {% for category, count in report.by_category.items() %}
+            <div class="bar-row">
+                <span class="bar-label">{{ category }}</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ (count / report.total * 100)|int }}%"></div>
+                </div>
+                <span class="bar-count">{{ count }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Empty state -->
+        {% if report.total == 0 %}
+        <div class="empty-state">
+            <div class="empty-icon">🔧</div>
+            <h4>Ready to get to work?</h4>
+            <p>Browse available jobs and submit your first application.</p>
+            <a class="dash-btn dash-btn--primary" href="/find_jobs">Browse Jobs</a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

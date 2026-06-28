@@ -1,34 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Jobs</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Matching Jobs</h1>
-        <form action="{{ url_for('find_jobs') }}" method="post">
-            <label for="name">Enter your name:</label>
-            <input type="text" id="name" name="name" required>
-            <label for="skill">Enter your skill:</label>
-            <input type="text" id="skill" name="skill" required>
-            <button type="submit">Find Jobs</button>
-        </form>
-        {% if jobs %}
-            <h2>Available Jobs:</h2>
-            <ul>
-                {% for job in jobs %}
-                    <li>
-                        <strong>Employer:</strong> {{ job.employer }}<br>
-                        <strong>Job Description:</strong> {{ job.desc }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No matching jobs found.</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<div class="jobs-list">
+
+    <form method="POST" class="search-bar">
+        <h2>Find Jobs</h2>
+        <div class="search-row">
+            <input name="skill"    placeholder="🔧 Skill (e.g. Plumber)" value="{{ skill_filter }}">
+            <input name="location" placeholder="📍 Location"             value="{{ loc_filter }}">
+            <button type="submit">Search</button>
+        </div>
+    </form>
+
+    {% if jobs %}
+        {% for job in jobs %}
+        <div class="dash-card dash-card--job {% if is_featured(job) %}dash-card--featured{% endif %}">
+            <div class="dash-card__header">
+                <div style="display:flex;gap:.5rem;align-items:center">
+                    {% if is_featured(job) %}
+                        <span class="featured-badge">⭐ FEATURED</span>
+                    {% endif %}
+                    <span class="status-badge open">OPEN</span>
+                </div>
+                <span class="job-meta">{{ job.posted_at }}</span>
+            </div>
+            <h4 class="job-title">{{ job.skill }}</h4>
+            <div class="job-details">
+                <span>👤 {{ job.employer }}</span>
+                {% if job.location %}<span>📍 {{ job.location }}</span>{% endif %}
+                {% if job.pay %}<span>💰 {{ job.pay }}</span>{% endif %}
+            </div>
+            <p class="job-desc">{{ job.desc }}</p>
+            <div class="dash-card__actions">
+                {% if job.id in applied_ids %}
+                    <span class="dash-btn dash-btn--ghost dash-btn--sm" style="pointer-events:none;opacity:.6">
+                        ✓ Applied
+                    </span>
+                {% else %}
+                    <a class="dash-btn dash-btn--primary dash-btn--sm" href="/apply/{{ job.id }}">
+                        Apply Now
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h4>No jobs found</h4>
+            <p>Try a different skill or location, or check back soon.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

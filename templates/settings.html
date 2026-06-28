@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-wrapper">
+<form method="POST">
+    <h2>Settings</h2>
+
+    <input name="skill"    placeholder="Skill"    value="{{ user.skill }}">
+    <input name="location" placeholder="Location" value="{{ user.location }}">
+    <input name="phone"    placeholder="Phone"    value="{{ user.phone }}">
+    <textarea name="bio"   placeholder="Short bio about yourself">{{ user.bio }}</textarea>
+
+    <label>Theme</label>
+    <div class="radio-row">
+        <label><input type="radio" name="theme" value="light" {% if user.theme == 'light' %}checked{% endif %}> Light</label>
+        <label><input type="radio" name="theme" value="dark"  {% if user.theme == 'dark'  %}checked{% endif %}> Dark</label>
+    </div>
+
+    <button type="submit">Save Changes</button>
+</form>
+</div>
+{% endblock %}

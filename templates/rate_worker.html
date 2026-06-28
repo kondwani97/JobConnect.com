@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-wrapper">
+
+    {% if already_rated %}
+        <h2>Already Rated</h2>
+        <p>You have already submitted a rating for <b>{{ app_rec.worker }}</b> on this job.</p>
+        <a class="btn" href="/dashboard">Back to Dashboard</a>
+
+    {% else %}
+        <form method="POST">
+            <h2>Rate {{ app_rec['worker'] }}</h2>
+            <p>Job: <b>{{ app_rec['job_skill'] }}</b></p>
+            <p>Completed: {{ app_rec['completed_at'] }}</p>
+
+            <label>Star Rating</label>
+            <div class="star-input">
+                {% for i in range(5, 0, -1) %}
+                <input type="radio" id="star{{ i }}" name="stars" value="{{ i }}" {% if i == 5 %}checked{% endif %}>
+                <label for="star{{ i }}" class="star-label">★</label>
+                {% endfor %}
+            </div>
+
+            <textarea name="comment" placeholder="Leave a comment (optional)"></textarea>
+
+            <button type="submit">Submit Rating</button>
+            <a class="btn outline" href="/dashboard">Skip</a>
+        </form>
+    {% endif %}
+
+</div>
+{% endblock %}

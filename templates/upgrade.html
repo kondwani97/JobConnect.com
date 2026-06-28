@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="upgrade-page">
+
+    <div class="upgrade-header">
+        <h2>Choose Your Plan</h2>
+        <p>Scale your hiring with the right plan for your business</p>
+    </div>
+
+    <div class="plans-grid">
+
+        {% for key, plan in plans.items() %}
+        <div class="plan-card {% if key == current_plan %}plan-card--current{% endif %} {% if key == 'pro' %}plan-card--featured{% endif %}">
+
+            {% if key == 'pro' %}
+                <div class="plan-popular">Most Popular</div>
+            {% endif %}
+            {% if key == current_plan %}
+                <div class="plan-active-chip">✓ Current Plan</div>
+            {% endif %}
+
+            <div class="plan-name">{{ plan.name }}</div>
+            <div class="plan-price">
+                {% if plan.price == 0 %}
+                    <span class="price-amount">Free</span>
+                {% else %}
+                    <span class="price-amount">K{{ plan.price }}</span>
+                    <span class="price-period">/month</span>
+                {% endif %}
+            </div>
+
+            <ul class="plan-features">
+                <li>
+                    {% if plan.post_limit is none %}
+                        ✅ Unlimited job posts
+                    {% else %}
+                        ✅ {{ plan.post_limit }} job posts/month
+                    {% endif %}
+                </li>
+                <li>
+                    {% if plan.featured_limit == 0 %}
+                        ❌ No featured listings
+                    {% else %}
+                        ✅ {{ plan.featured_limit }} featured listing{{ 's' if plan.featured_limit != 1 }}
+                    {% endif %}
+                </li>
+                <li>{% if key != 'free' %}✅ Priority support{% else %}❌ Priority support{% endif %}</li>
+                <li>{% if key == 'pro' %}✅ Applicant analytics{% else %}❌ Applicant analytics{% endif %}</li>
+            </ul>
+
+            {% if key != current_plan %}
+            <form method="POST" action="/upgrade">
+                <input type="hidden" name="plan" value="{{ key }}">
+                <button type="submit" class="plan-btn {% if key == 'pro' %}plan-btn--pro{% endif %}">
+                    {% if plan.price == 0 %}Downgrade to Free
+                    {% else %}Upgrade to {{ plan.name }}{% endif %}
+                </button>
+            </form>
+            {% else %}
+            <div class="plan-btn plan-btn--disabled">Current Plan</div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="upgrade-note">
+        <p>💳 Payment via MTN Mobile Money and Airtel Money coming soon.<br>
+           All upgrades are simulated for now during development.</p>
+    </div>
+
+    <div class="center" style="margin-top:1.5rem">
+        <a class="dash-btn dash-btn--ghost" href="/dashboard">← Back to Dashboard</a>
+    </div>
+
+</div>
+{% endblock %}

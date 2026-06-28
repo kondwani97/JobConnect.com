@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard center">
+
+    {% if worker.profile_pic %}
+        <img src="{{ url_for('static', filename='uploads/' + worker.profile_pic) }}" class="profile-pic" alt="Profile">
+    {% else %}
+        <div class="profile-pic placeholder">{{ worker.name[0].upper() }}</div>
+    {% endif %}
+
+    <h2>{{ worker.name }}</h2>
+    <p>{{ worker.skill }} | {{ worker.location }}</p>
+    {% if worker.bio %}<p class="bio">{{ worker.bio }}</p>{% endif %}
+    <p class="muted">Member since {{ worker.joined }}</p>
+
+    {# ── Rating ── #}
+    <div class="rating-display">
+        {% if avg_rating %}
+            {% for i in range(1, 6) %}
+                <span class="star {% if i <= avg_rating %}filled{% endif %}">★</span>
+            {% endfor %}
+            <span class="rating-value">{{ avg_rating }} / 5  ({{ worker_ratings | length }} review{{ 's' if worker_ratings | length != 1 }})</span>
+        {% else %}
+            <span class="muted">No ratings yet</span>
+        {% endif %}
+    </div>
+
+    {# ── Stats ── #}
+    <div class="stats-row">
+        <div class="stat-box">
+            <h3>{{ report.total }}</h3>
+            <p>Jobs Completed</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ worker_ratings | length }}</h3>
+            <p>Reviews</p>
+        </div>
+    </div>
+
+    {# ── Job breakdown ── #}
+    {% if report.by_category %}
+    <h4>Skills Worked</h4>
+    <div class="bar-chart">
+        {% for category, count in report.by_category.items() %}
+        <div class="bar-row">
+            <span class="bar-label">{{ category }}</span>
+            <div class="bar-track">
+                <div class="bar-fill" style="width: {{ (count / report.total * 100)|int }}%"></div>
+            </div>
+            <span class="bar-count">{{ count }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# ── Reviews ── #}
+    {% if worker_ratings %}
+    <h4>Reviews</h4>
+    {% for r in worker_ratings %}
+    <div class="rating-card">
+        <div class="stars">
+            {% for i in range(1, 6) %}
+                <span class="star {% if i <= r.stars %}filled{% endif %}">★</span>
+            {% endfor %}
+        </div>
+        <p><b>{{ r.employer }}</b> — {{ r.given_at }}</p>
+        {% if r.comment %}<p class="comment">{{ r.comment }}</p>{% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {# ── Message button (visible to employers only) ── #}
+    {% if session.get('user') and session['user']['role'] == 'employer' %}
+        <a class="btn" href="/messages/send?to={{ worker.name }}&subject=Job Opportunity">
+            Message {{ worker.name }}
+        </a>
+    {% endif %}
+
+</div>
+{% endblock %}

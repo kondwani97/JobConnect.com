@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-wrapper">
+
+    <div class="message-view">
+        <h2>{{ msg.subject }}</h2>
+        <p class="msg-meta">
+            <b>From:</b> {{ msg['from'] }} &nbsp;|&nbsp;
+            <b>To:</b>   {{ msg.to }}       &nbsp;|&nbsp;
+            <b>Date:</b> {{ msg.timestamp }}
+        </p>
+        <div class="msg-body">{{ msg.body }}</div>
+    </div>
+
+    {# ── Thread / related messages ── #}
+    {% if thread %}
+    <div class="thread-section">
+        <h4>Related Messages</h4>
+        {% for t in thread %}
+        <div class="thread-msg {% if t['from'] == session['user']['name'] %}sent-side{% else %}recv-side{% endif %}">
+            <span class="thread-from">{{ t['from'] }}</span>
+            <span class="thread-time">{{ t.timestamp }}</span>
+            <p>{{ t.body }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# ── Reply ── #}
+    <div class="reply-actions">
+        <a class="btn"
+           href="/messages/send?to={{ msg['from'] }}&subject=Re: {{ msg.subject }}&thread_id={{ msg.thread_id if msg.thread_id is not none else msg.id }}">
+            Reply
+        </a>
+        <a class="btn outline" href="/messages">Back to Inbox</a>
+    </div>
+
+</div>
+{% endblock %}
