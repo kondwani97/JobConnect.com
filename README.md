@@ -171,4 +171,3 @@ This project is under active development. Issues and pull requests welcome.
 
 ---
 
-*Built in Zambia 🇿🇲 — for Zambia.*
