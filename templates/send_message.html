@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}New message{% endblock %}
+{% block content %}
+
+<div class="card" style="max-width:520px;margin:0 auto;">
+  <span class="eyebrow">Compose</span>
+  <h1>New message</h1>
+
+  <form method="POST">
+    <div class="field">
+      <label for="to">To (username)</label>
+      <input type="text" id="to" name="to" value="{{ prefill_to }}" required>
+    </div>
+    <div class="field">
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" name="subject" value="{{ prefill_subject }}">
+    </div>
+    <div class="field">
+      <label for="body">Message</label>
+      <textarea id="body" name="body" required></textarea>
+    </div>
+    <input type="hidden" name="thread_id" value="{{ prefill_thread }}">
+    <button type="submit" class="btn btn-primary btn-block">Send</button>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+
+<div class="card auth-wrap" style="padding:0;max-width:900px;margin:0 auto;">
+  <div class="auth-side">
+    <span class="eyebrow" style="color:var(--copper)">Welcome back</span>
+    <h2>Good to see you again.</h2>
+    <p>Log in with your phone number to check messages, manage applications
+      and keep your rating history growing.</p>
+  </div>
+  <form method="POST" class="auth-form">
+    <div class="field">
+      <label for="phone">Phone number</label>
+      <input type="tel" id="phone" name="phone" placeholder="09XXXXXXXX" required autofocus>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <div class="row" style="gap:8px;">
+        <input type="password" id="password" name="password" required style="flex:1;">
+        <button type="button" class="btn btn-outline btn-sm" data-toggle-password="password">Show</button>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Log in</button>
+    <p class="muted" style="text-align:center;margin-top:14px;">
+      New to JobConnect? <a href="{{ url_for('register') }}">Create an account</a>
+    </p>
+  </form>
+</div>
+
+{% endblock %}

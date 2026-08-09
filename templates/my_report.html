@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}My report{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <span class="eyebrow">Your track record</span>
+  <h1>My report</h1>
+</div>
+
+<div class="grid grid-3" style="margin-bottom:30px;">
+  <div class="card card-sm">
+    <span class="eyebrow">Jobs completed</span>
+    <h2>{{ report.total }}</h2>
+  </div>
+  <div class="card card-sm">
+    <span class="eyebrow">Average rating</span>
+    <h2>{% if avg_rating %}<span class="stars">&#9733;</span> {{ avg_rating }}{% else %}&mdash;{% endif %}</h2>
+    <p class="muted" style="margin:0;">{{ rating_count }} review{{ 's' if rating_count != 1 }}</p>
+  </div>
+  <div class="card card-sm">
+    <span class="eyebrow">Top skill worked</span>
+    <h2 style="font-size:1.2rem;">
+      {% if report.by_skill %}{{ report.by_skill|dictsort(by='value')|last|first }}{% else %}&mdash;{% endif %}
+    </h2>
+  </div>
+</div>
+
+<div class="grid grid-2">
+  <div class="card card-sm">
+    <h3>Work breakdown</h3>
+    {% if report.by_skill %}
+      <table>
+        <tr><th>Skill</th><th>Jobs</th></tr>
+        {% for skill, count in report.by_skill.items() %}
+        <tr><td>{{ skill }}</td><td>{{ count }}</td></tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <p class="muted" style="margin:0;">No completed jobs yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="card card-sm">
+    <h3>Reviews received</h3>
+    {% if my_ratings %}
+      <div class="stack" style="gap:12px;">
+        {% for r in my_ratings|reverse %}
+        <div>
+          <div class="spread">
+            <span class="stars">{% for _ in range(r.stars) %}&#9733;{% endfor %}{% for _ in range(5 - r.stars) %}&#9734;{% endfor %}</span>
+            <span class="muted">{{ r.given_at }}</span>
+          </div>
+          {% if r.comment %}<p style="margin:4px 0 0;">{{ r.comment }}</p>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted" style="margin:0;">No reviews yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

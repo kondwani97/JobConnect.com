@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Find jobs{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <span class="eyebrow">Open positions</span>
+  <h1>Find jobs</h1>
+</div>
+
+<form method="POST" class="card card-sm row" style="margin-bottom:24px;align-items:flex-end;">
+  <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
+    <label for="skill">Skill</label>
+    <select id="skill" name="skill">
+      <option value="">Any skill</option>
+      {% for s in skills %}
+        <option value="{{ s }}" {% if skill_filter == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
+    <label for="location">Location</label>
+    <select id="location" name="location">
+      <option value="">Any location</option>
+      {% for loc in locations %}
+        <option value="{{ loc }}" {% if loc_filter == loc %}selected{% endif %}>{{ loc }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if jobs %}
+<div class="grid grid-2">
+  {% for job in jobs %}
+  <div class="ticket">
+    <div class="ticket-body">
+      <div class="spread">
+        <div class="ticket-skill">{{ job.skill }}</div>
+        <span class="ticket-status open">Open</span>
+      </div>
+      <p class="muted" style="margin:6px 0;">{{ job.location }} &middot; {{ job.pay or 'Pay: negotiable' }}</p>
+      <p style="margin:0;">{{ job.desc }}</p>
+    </div>
+    <div class="ticket-stub">
+      <span>{{ job.employer }} &middot; {{ job.posted_at }}</span>
+      {% if job.id in applied_ids %}
+        <span class="badge">Applied</span>
+      {% else %}
+        <a href="{{ url_for('apply', job_id=job.id) }}" class="btn btn-primary btn-sm">Apply</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">No open jobs match your filters right now.</div>
+{% endif %}
+
+{% endblock %}

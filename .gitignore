@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+env/
+.venv/
+
+# Flask
+instance/
+.flaskenv
+
+# Uploaded profile pictures (user content, not source)
+static/uploads/*
+!static/uploads/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+*.swp
+
+# Environment secrets
+.env

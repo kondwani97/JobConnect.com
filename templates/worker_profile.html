@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ worker.name }}{% endblock %}
+{% block content %}
+
+<div class="grid grid-2" style="grid-template-columns:280px 1fr;align-items:start;">
+
+  <div class="card stack" style="text-align:center;">
+    <div class="avatar" style="width:90px;height:90px;font-size:1.8rem;margin:0 auto;">
+      {% if worker.profile_pic %}<img src="{{ url_for('static', filename='uploads/' ~ worker.profile_pic) }}" alt="">
+      {% else %}{{ worker.name[0] }}{% endif %}
+    </div>
+    <h2 style="margin-top:10px;">{{ worker.name }}</h2>
+    <p class="muted" style="margin:0;">{{ worker.skill }} &middot; {{ worker.experience }}</p>
+    <p class="muted" style="margin:0;">{{ worker.location }}</p>
+
+    <div class="divider"></div>
+
+    {% if avg_rating %}
+      <div><span class="stars" style="font-size:1.3rem;">&#9733;</span> <strong>{{ avg_rating }}</strong></div>
+      <p class="muted" style="margin:0;">{{ rating_count }} review{{ 's' if rating_count != 1 }}</p>
+    {% else %}
+      <p class="muted">No ratings yet</p>
+    {% endif %}
+    <p class="badge" style="display:inline-block;">{{ report.total }} jobs completed</p>
+
+    {% if viewer and viewer.role == 'employer' %}
+      <div class="divider"></div>
+      <p style="margin:0;"><strong>Phone:</strong> {{ worker.phone }}</p>
+      <a href="{{ url_for('send_message', to=worker.name, subject='Regarding your profile') }}" class="btn btn-primary btn-block">Message {{ worker.name.split(' ')[0] }}</a>
+    {% elif not viewer %}
+      <p class="muted">Log in as an employer to see contact details.</p>
+    {% endif %}
+  </div>
+
+  <div class="stack">
+    {% if worker.bio %}
+    <div class="card card-sm">
+      <h3>About</h3>
+      <p style="margin:0;">{{ worker.bio }}</p>
+    </div>
+    {% endif %}
+
+    {% if report.by_skill %}
+    <div class="card card-sm">
+      <h3>Work breakdown</h3>
+      <table>
+        <tr><th>Skill</th><th>Jobs completed</th></tr>
+        {% for skill, count in report.by_skill.items() %}
+        <tr><td>{{ skill }}</td><td>{{ count }}</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+    {% endif %}
+
+    <div class="card card-sm">
+      <h3>Reviews</h3>
+      {% if worker_ratings %}
+        <div class="stack" style="gap:14px;">
+          {% for r in worker_ratings|reverse %}
+          <div>
+            <div class="spread">
+              <span class="stars">{% for _ in range(r.stars) %}&#9733;{% endfor %}{% for _ in range(5 - r.stars) %}&#9734;{% endfor %}</span>
+              <span class="muted">{{ r.given_at }}</span>
+            </div>
+            {% if r.comment %}<p style="margin:4px 0 0;">{{ r.comment }}</p>{% endif %}
+            <p class="muted" style="margin:2px 0 0;">&mdash; {{ r.employer }}</p>
+          </div>
+          <hr class="divider" style="margin:6px 0;">
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="muted" style="margin:0;">No reviews yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

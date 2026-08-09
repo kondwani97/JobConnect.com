@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="page-head spread">
+  <div>
+    <span class="eyebrow">Worker dashboard</span>
+    <h1>Welcome, {{ user.name.split(' ')[0] }}</h1>
+  </div>
+  <a href="{{ url_for('find_jobs') }}" class="btn btn-primary">Find jobs</a>
+</div>
+
+<div class="grid grid-3" style="margin-bottom:30px;">
+  <div class="card card-sm">
+    <span class="eyebrow">Jobs completed</span>
+    <h2>{{ report.total }}</h2>
+  </div>
+  <div class="card card-sm">
+    <span class="eyebrow">Average rating</span>
+    <h2>
+      {% if avg_rating %}<span class="stars">&#9733;</span> {{ avg_rating }}{% else %}&mdash;{% endif %}
+    </h2>
+    <p class="muted" style="margin:0;">{{ rating_count }} review{{ 's' if rating_count != 1 }}</p>
+  </div>
+  <div class="card card-sm">
+    <span class="eyebrow">Your trade</span>
+    <h2 style="font-size:1.2rem;">{{ user.skill or 'Not set' }}</h2>
+    <p class="muted" style="margin:0;">{{ user.experience or '' }}</p>
+  </div>
+</div>
+
+<div class="grid grid-2">
+
+  <section class="stack">
+    <div class="spread">
+      <h2>Jobs matching your skill</h2>
+      <a href="{{ url_for('find_jobs') }}" class="muted">See all &rarr;</a>
+    </div>
+    {% if matching_jobs %}
+      {% for job in matching_jobs %}
+      <div class="ticket">
+        <div class="ticket-body">
+          <div class="spread">
+            <div class="ticket-skill">{{ job.skill }}</div>
+            <span class="ticket-status open">Open</span>
+          </div>
+          <p class="muted" style="margin:6px 0;">{{ job.location }} &middot; {{ job.pay or 'Pay: negotiable' }}</p>
+          <p style="margin:0;">{{ job.desc[:110] }}{% if job.desc|length > 110 %}&hellip;{% endif %}</p>
+        </div>
+        <div class="ticket-stub">
+          <span>Posted by {{ job.employer }}</span>
+          <a href="{{ url_for('apply', job_id=job.id) }}" class="btn btn-primary btn-sm">Apply</a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">No open jobs matching <strong>{{ user.skill }}</strong> right now. Check back soon.</div>
+    {% endif %}
+  </section>
+
+  <section class="stack">
+    <h2>Your applications</h2>
+    {% if my_applications %}
+      {% for a in my_applications|reverse %}
+      <div class="ticket">
+        <div class="ticket-body">
+          <div class="spread">
+            <div class="ticket-skill">{{ a.job_skill }}</div>
+            <span class="ticket-status {{ a.status }}">{{ a.status }}</span>
+          </div>
+          <p class="muted" style="margin:6px 0 0;">{{ a.job_location }} &middot; {{ a.employer }}</p>
+        </div>
+        <div class="ticket-stub">
+          <span>Applied {{ a.applied_at }}</span>
+          {% if a.status == 'completed' %}
+            <a href="{{ url_for('worker_profile', name=user.name) }}" class="muted">View review &rarr;</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">You haven't applied to any jobs yet.</div>
+    {% endif %}
+  </section>
+
+</div>
+
+{% endblock %}

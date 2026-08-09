@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ msg.subject }}{% endblock %}
+{% block content %}
+
+<div class="card" style="max-width:640px;margin:0 auto;">
+  <a href="{{ url_for('inbox') }}" class="muted">&larr; Back to inbox</a>
+  <h2 style="margin-top:14px;">{{ msg.subject }}</h2>
+  <p class="muted">From {{ msg.from }} &middot; {{ msg.timestamp }}</p>
+  <div class="divider"></div>
+  <p style="white-space:pre-line;">{{ msg.body }}</p>
+
+  {% if thread %}
+    <div class="divider"></div>
+    <h3>Earlier in this thread</h3>
+    <div class="stack">
+      {% for t in thread|sort(attribute='timestamp') %}
+      <div class="card-sm" style="background:var(--paper);border-radius:8px;">
+        <div class="spread">
+          <strong>{{ t.from }} &rarr; {{ t.to }}</strong>
+          <span class="muted">{{ t.timestamp }}</span>
+        </div>
+        <p style="white-space:pre-line;margin:6px 0 0;">{{ t.body }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <a href="{{ url_for('send_message', to=msg.from, subject='Re: ' ~ msg.subject, thread_id=msg.thread_id) }}" class="btn btn-primary" style="margin-top:20px;">Reply</a>
+</div>
+
+{% endblock %}

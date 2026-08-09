@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+
+<div class="card" style="max-width:520px;margin:0 auto;">
+  <span class="eyebrow">Your account</span>
+  <h1>Settings</h1>
+
+  <form method="POST">
+    <div class="field">
+      <label for="location">Location</label>
+      <select id="location" name="location">
+        {% for loc in locations %}
+          <option value="{{ loc }}" {% if user.location == loc %}selected{% endif %}>{{ loc }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    {% if user.role == 'worker' %}
+    <div class="field">
+      <label for="experience">Experience level</label>
+      <select id="experience" name="experience">
+        {% for lvl in experience_levels %}
+          <option value="{{ lvl }}" {% if user.experience == lvl %}selected{% endif %}>{{ lvl }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% endif %}
+
+    <div class="field">
+      <label for="bio">Bio</label>
+      <textarea id="bio" name="bio">{{ user.bio or '' }}</textarea>
+    </div>
+
+    <div class="field">
+      <label>Theme</label>
+      <div class="row">
+        <label class="field-inline"><input type="radio" name="theme" value="light" {% if user.theme != 'dark' %}checked{% endif %}> Light</label>
+        <label class="field-inline"><input type="radio" name="theme" value="dark" {% if user.theme == 'dark' %}checked{% endif %}> Dark</label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+  </form>
+</div>
+
+{% endblock %}

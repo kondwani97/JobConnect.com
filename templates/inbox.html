@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Inbox{% endblock %}
+{% block content %}
+
+<div class="page-head spread">
+  <div>
+    <span class="eyebrow">Messages</span>
+    <h1>Inbox</h1>
+  </div>
+  <a href="{{ url_for('send_message') }}" class="btn btn-primary">New message</a>
+</div>
+
+<div class="grid grid-2">
+  <section class="stack">
+    <h3>Received</h3>
+    {% if received %}
+      {% for m in received %}
+      <a href="{{ url_for('read_message', msg_id=m.id) }}" class="card card-sm" style="display:block;{{ 'border-left:3px solid var(--copper);' if not m.read }}">
+        <div class="spread">
+          <strong>{{ m.subject }}</strong>
+          {% if not m.read %}<span class="badge" style="background:var(--copper);color:#fff;border:none;">New</span>{% endif %}
+        </div>
+        <p class="muted" style="margin:4px 0 0;">From {{ m.from }} &middot; {{ m.timestamp }}</p>
+      </a>
+      {% endfor %}
+    {% else %}
+      <div class="empty">No messages received yet.</div>
+    {% endif %}
+  </section>
+
+  <section class="stack">
+    <h3>Sent</h3>
+    {% if sent %}
+      {% for m in sent %}
+      <div class="card card-sm">
+        <strong>{{ m.subject }}</strong>
+        <p class="muted" style="margin:4px 0 0;">To {{ m.to }} &middot; {{ m.timestamp }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">No messages sent yet.</div>
+    {% endif %}
+  </section>
+</div>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Post a job{% endblock %}
+{% block content %}
+
+<div class="card" style="max-width:600px;margin:0 auto;">
+  <span class="eyebrow">New job posting</span>
+  <h1>What do you need done?</h1>
+
+  <form method="POST">
+    <div class="field">
+      <label for="skill">Skill required</label>
+      <select id="skill" name="skill" required>
+        <option value="">Select skill&hellip;</option>
+        {% for s in skills %}
+          <option value="{{ s }}" {% if form.get('skill') == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="location">Location</label>
+      <select id="location" name="location" required>
+        <option value="">Select town&hellip;</option>
+        {% for loc in locations %}
+          <option value="{{ loc }}" {% if form.get('location') == loc %}selected{% endif %}>{{ loc }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="description">Job description</label>
+      <textarea id="description" name="description" required placeholder="What's the job? Any tools, materials or timing details workers should know.">{{ form.get('description','') }}</textarea>
+    </div>
+
+    <div class="field">
+      <label for="pay">Pay (optional)</label>
+      <input type="text" id="pay" name="pay" value="{{ form.get('pay','') }}" placeholder="e.g. K350 per day, or negotiable">
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Post job</button>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ employer.name }}{% endblock %}
+{% block content %}
+
+<div class="grid grid-2" style="grid-template-columns:280px 1fr;align-items:start;">
+
+  <div class="card stack" style="text-align:center;">
+    <div class="avatar" style="width:90px;height:90px;font-size:1.8rem;margin:0 auto;">
+      {% if employer.profile_pic %}<img src="{{ url_for('static', filename='uploads/' ~ employer.profile_pic) }}" alt="">
+      {% else %}{{ employer.name[0] }}{% endif %}
+    </div>
+    <h2 style="margin-top:10px;">{{ employer.name }}</h2>
+    {% if employer.company_name %}<p class="muted" style="margin:0;">{{ employer.company_name }}</p>{% endif %}
+    <p class="muted" style="margin:0;">{{ employer.location }}</p>
+    <p class="badge" style="display:inline-block;">{{ employer_jobs|length }} job{{ 's' if employer_jobs|length != 1 }} posted</p>
+
+    {% if viewer and viewer.role == 'worker' %}
+      <a href="{{ url_for('send_message', to=employer.name, subject='Regarding your job posting') }}" class="btn btn-primary btn-block">Message {{ employer.name.split(' ')[0] }}</a>
+    {% endif %}
+  </div>
+
+  <div class="stack">
+    <h3>Jobs posted</h3>
+    {% if employer_jobs %}
+      {% for job in employer_jobs|reverse %}
+      <div class="ticket">
+        <div class="ticket-body">
+          <div class="spread">
+            <div class="ticket-skill">{{ job.skill }}</div>
+            <span class="ticket-status {{ job.status }}">{{ job.status }}</span>
+          </div>
+          <p class="muted" style="margin:6px 0;">{{ job.location }} &middot; {{ job.pay or 'Pay: negotiable' }}</p>
+          <p style="margin:0;">{{ job.desc }}</p>
+        </div>
+        <div class="ticket-stub">
+          <span>Posted {{ job.posted_at }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">No jobs posted yet.</div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

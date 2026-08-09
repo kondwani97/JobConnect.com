@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Complete job{% endblock %}
+{% block content %}
+
+<div class="card" style="max-width:520px;margin:0 auto;">
+  <span class="eyebrow">Wrap up</span>
+  <h1>Mark job as complete</h1>
+
+  <div class="ticket" style="margin-bottom:22px;">
+    <div class="ticket-body">
+      <div class="ticket-skill">{{ app_rec.job_skill }}</div>
+      <p class="muted" style="margin:6px 0;">{{ app_rec.job_location }}</p>
+      <p style="margin:0;">{{ app_rec.job_desc }}</p>
+    </div>
+    <div class="ticket-stub">
+      <span>Worker: {{ app_rec.worker }}</span>
+      <span>{{ app_rec.worker_phone }}</span>
+    </div>
+  </div>
+
+  <form method="POST">
+    <div class="field">
+      <label for="pay_amount">Amount paid (ZMW)</label>
+      <input type="number" id="pay_amount" name="pay_amount" step="0.01" min="0" placeholder="e.g. 350.00" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Confirm completion</button>
+    <p class="muted" style="text-align:center;margin-top:12px;">You'll be asked to rate {{ app_rec.worker }} next.</p>
+  </form>
+</div>
+
+{% endblock %}

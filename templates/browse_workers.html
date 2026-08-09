@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Browse workers{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <span class="eyebrow">Find talent</span>
+  <h1>Browse workers</h1>
+</div>
+
+<form method="POST" class="card card-sm row" style="margin-bottom:24px;align-items:flex-end;">
+  <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
+    <label for="skill">Skill</label>
+    <select id="skill" name="skill">
+      <option value="">Any skill</option>
+      {% for s in skills %}
+        <option value="{{ s }}" {% if skill_filter == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
+    <label for="location">Location</label>
+    <select id="location" name="location">
+      <option value="">Any location</option>
+      {% for loc in locations %}
+        <option value="{{ loc }}" {% if loc_filter == loc %}selected{% endif %}>{{ loc }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if workers %}
+<div class="grid grid-3">
+  {% for w in workers %}
+  <div class="card card-sm stack" style="gap:8px;">
+    <div class="row" style="gap:10px;">
+      <div class="avatar">
+        {% if w.profile_pic %}<img src="{{ url_for('static', filename='uploads/' ~ w.profile_pic) }}" alt="">
+        {% else %}{{ w.name[0] }}{% endif %}
+      </div>
+      <div>
+        <strong><a href="{{ url_for('worker_profile', name=w.name) }}">{{ w.name }}</a></strong>
+        <div class="muted">{{ w.skill }}</div>
+      </div>
+    </div>
+    <div class="muted">{{ w.location }} &middot; {{ w.experience }}</div>
+    <div class="spread">
+      <span>
+        {% if w.avg_rating %}<span class="stars">&#9733;</span> {{ w.avg_rating }} ({{ w.rating_count }})
+        {% else %}<span class="muted">No ratings yet</span>{% endif %}
+      </span>
+      <span class="badge">{{ w.jobs_done }} jobs done</span>
+    </div>
+    <a href="{{ url_for('worker_profile', name=w.name) }}" class="btn btn-outline btn-sm btn-block">View profile</a>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">No workers match your filters. Try a broader search.</div>
+{% endif %}
+
+{% endblock %}

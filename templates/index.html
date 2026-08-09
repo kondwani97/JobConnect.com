@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block hero %}
+<section class="hero">
+  <div class="container">
+    <span class="eyebrow" style="color:var(--copper)">Lusaka &middot; Kitwe &middot; Ndola &middot; and beyond</span>
+    <h1>Skilled work, found faster.</h1>
+    <p class="lead">JobConnect links Zambia's electricians, welders, tailors, drivers and
+      tradespeople directly with employers who need them &mdash; no agency,
+      no middleman, just a phone number and a job well done.</p>
+    <div class="row" style="margin-top:26px;">
+      <a href="{{ url_for('register') }}" class="btn btn-primary">Create a free account</a>
+      <a href="{{ url_for('login') }}" class="btn btn-outline" style="border-color:#fff;color:#fff;">Log in</a>
+    </div>
+    <div class="stat-row">
+      <div><div class="stat-num">20+</div><div class="stat-label">Trade categories</div></div>
+      <div><div class="stat-num">15</div><div class="stat-label">Towns covered</div></div>
+      <div><div class="stat-num">K0</div><div class="stat-label">Cost to sign up</div></div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+
+<section class="stack" style="margin-bottom:40px;">
+  <h2>How it works</h2>
+  <div class="grid grid-3">
+    <div class="card card-sm">
+      <span class="eyebrow">For workers</span>
+      <h3>1. Build your profile</h3>
+      <p class="muted">Add your trade, experience level and location. Employers search for you &mdash; not the other way round.</p>
+    </div>
+    <div class="card card-sm">
+      <span class="eyebrow">For employers</span>
+      <h3>2. Post the job</h3>
+      <p class="muted">Describe what you need done, where, and the pay. It goes straight to matching workers.</p>
+    </div>
+    <div class="card card-sm">
+      <span class="eyebrow">Both sides</span>
+      <h3>3. Get it done, get rated</h3>
+      <p class="muted">Message directly, complete the job, and build a rating history that speaks for itself.</p>
+    </div>
+  </div>
+</section>
+
+<section class="stack" style="margin-bottom:10px;">
+  <h2>Popular trades</h2>
+  <div class="row">
+    {% for s in ['Plumber','Electrician','Welder','Carpenter','Painter','Mechanic','Driver','Tailor / Seamstress','Solar Installer'] %}
+      <span class="badge" style="padding:6px 12px;font-size:.8rem;">{{ s }}</span>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

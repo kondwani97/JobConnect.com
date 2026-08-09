@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Create account{% endblock %}
+{% block content %}
+
+<div class="card" style="max-width:640px;margin:0 auto;padding:0;overflow:hidden;">
+  <div style="background:var(--ink);color:#fff;padding:26px 32px;">
+    <span class="eyebrow" style="color:var(--copper)">Join JobConnect</span>
+    <h2 style="color:#fff;">Create your account</h2>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" style="padding:28px 32px;">
+
+    <label>I am a&hellip;</label>
+    <div class="role-choice">
+      <input type="radio" id="role-worker" name="role" value="worker"
+        {% if form.get('role','worker') == 'worker' %}checked{% endif %}>
+      <label for="role-worker">Worker &mdash; looking for jobs</label>
+
+      <input type="radio" id="role-employer" name="role" value="employer"
+        {% if form.get('role') == 'employer' %}checked{% endif %}>
+      <label for="role-employer">Employer &mdash; hiring workers</label>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" value="{{ form.get('name','') }}" required>
+      </div>
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" name="phone" value="{{ form.get('phone','') }}" placeholder="09XXXXXXXX" required>
+        <div class="field-hint">Used to log in &mdash; no email needed.</div>
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="field">
+        <label for="nrc_number">NRC number</label>
+        <input type="text" id="nrc_number" name="nrc_number" value="{{ form.get('nrc_number','') }}" placeholder="123456/78/9" required>
+      </div>
+      <div class="field">
+        <label for="date_of_birth">Date of birth</label>
+        <input type="date" id="date_of_birth" name="date_of_birth" value="{{ form.get('date_of_birth','') }}" required>
+        <div class="field-hint">You must be 18 or older.</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="location">Location</label>
+      <select id="location" name="location" required>
+        <option value="">Select town&hellip;</option>
+        {% for loc in locations %}
+          <option value="{{ loc }}" {% if form.get('location') == loc %}selected{% endif %}>{{ loc }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div data-worker-fields>
+      <fieldset>
+        <legend>Worker details</legend>
+        <div class="grid grid-2">
+          <div class="field">
+            <label for="skill">Skill / trade</label>
+            <select id="skill" name="skill">
+              <option value="">Select skill&hellip;</option>
+              {% for s in skills %}
+                <option value="{{ s }}" {% if form.get('skill') == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field">
+            <label for="experience">Experience level</label>
+            <select id="experience" name="experience">
+              <option value="">Select level&hellip;</option>
+              {% for lvl in experience_levels %}
+                <option value="{{ lvl }}" {% if form.get('experience') == lvl %}selected{% endif %}>{{ lvl }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="bio">Short bio</label>
+          <textarea id="bio" name="bio" maxlength="300" data-maxcount="300" data-counter-for="bio-count" placeholder="A sentence or two about your work.">{{ form.get('bio','') }}</textarea>
+          <div class="field-hint" id="bio-count">0 / 300</div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div data-employer-fields style="display:none;">
+      <fieldset>
+        <legend>Employer details</legend>
+        <div class="field">
+          <label for="company_name">Company name (optional)</label>
+          <input type="text" id="company_name" name="company_name" value="{{ form.get('company_name','') }}" placeholder="Leave blank if hiring as an individual">
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="field">
+      <label for="profile_pic">Profile picture (optional)</label>
+      <input type="file" id="profile_pic" name="profile_pic" accept=".png,.jpg,.jpeg,.gif">
+    </div>
+
+    <div class="grid grid-2">
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" minlength="8" required>
+        <div class="field-hint">At least 8 characters.</div>
+      </div>
+      <div class="field">
+        <label for="confirm_password">Confirm password</label>
+        <input type="password" id="confirm_password" name="confirm_password" minlength="8" required>
+      </div>
+    </div>
+
+    <div class="field field-inline">
+      <input type="checkbox" id="consent" name="consent" required>
+      <label for="consent" style="margin:0;">I agree to the Terms of Service and consent to my data being
+        processed under the Zambia Data Protection Act.</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Create account</button>
+    <p class="muted" style="text-align:center;margin-top:14px;">
+      Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+    </p>
+  </form>
+</div>
+
+{% endblock %}
